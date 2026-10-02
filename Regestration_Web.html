@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>بوابة الصالة الرياضية</title>
+<link rel="icon" type="image/png" href="./second_favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#2e2e2e;--card:#444;--border:#5a5a5a;--purple:#6c5ce7;--purple-light:#8b7cf8;--text:#fff;--muted:#aaa;--input-bg:#4a4a4a;--error:#c62828;--success:#2e7d32}
+body{background:var(--bg);font-family:'Cairo',sans-serif;color:var(--text);min-height:100vh;overflow-x:hidden}
+/* HERO */
+.hero{position:relative;width:100%;height:240px;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.6)}
+.hero-logo{position:absolute;bottom:-40px;right:22px;width:84px;height:84px;background:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.hero-logo svg{width:50px;height:50px;fill:#fff}
+/* VIEWS */
+.view{display:none}
+.view.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.container{max-width:820px;margin:0 auto;padding:0 20px 64px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--muted);font-family:inherit;font-size:.95rem;cursor:pointer;margin-top:26px;padding:6px 0;transition:color .2s}
+.back-btn:hover{color:var(--purple-light)}
+.page-title{padding-top:56px;padding-bottom:24px}
+.page-title h1,.landing-head h1{font-size:2rem;font-weight:900;line-height:1.2}
+.page-title p,.landing-head p{color:var(--muted);margin-top:8px;font-size:.97rem}
+/* LANDING */
+.landing-head{padding-top:68px;padding-bottom:32px;text-align:center}
+.option-cards{display:grid;gap:16px}
+.option-card{background:var(--card);border:2px solid var(--border);border-radius:20px;padding:26px 22px;cursor:pointer;display:flex;align-items:center;gap:18px;transition:border-color .25s,background .25s,transform .15s}
+.option-card:hover{border-color:var(--purple);background:#4e4e5e;transform:translateY(-2px)}
+.option-card:active{transform:scale(.98)}
+.opt-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.9rem;flex-shrink:0}
+.opt-icon.purple{background:rgba(108,92,231,.2)}
+.opt-icon.teal{background:rgba(0,184,148,.2)}
+.opt-text h3{font-size:1.1rem;font-weight:700;margin-bottom:3px}
+.opt-text p{font-size:.85rem;color:var(--muted)}
+.opt-arrow{margin-right:auto;font-size:1.3rem;color:var(--muted)}
+/* PLAN CARDS */
+.plans-title{font-size:1.05rem;font-weight:700;color:#d0d0d0;margin-bottom:16px}
+.plans-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:32px}
+.plan-card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:18px 10px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s,transform .15s;position:relative;overflow:hidden}
+.plan-card:hover{border-color:var(--purple);background:#4e4e58;transform:translateY(-3px)}
+.plan-card.selected{border-color:var(--purple);background:rgba(108,92,231,.18)}
+.plan-card:active{transform:scale(.97)}
+.plan-badge{position:absolute;top:10px;right:10px;background:var(--purple);color:#fff;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px}
+.plan-icon{font-size:1.8rem;margin-bottom:8px}
+.plan-dur{font-size:.9rem;font-weight:700;margin-bottom:8px;color:#ddd;display:flex;align-items:baseline;justify-content:center;gap:5px;white-space:nowrap}
+.plan-days{color:#aaa;font-size:.72rem;font-weight:600}
+.plan-price{font-size:1.6rem;font-weight:900;color:var(--purple-light);line-height:1}
+.plan-cur{font-size:.78rem;color:var(--muted);margin-bottom:4px}
+.plan-check{position:absolute;top:10px;left:10px;width:20px;height:20px;border-radius:50%;background:var(--purple);display:none;align-items:center;justify-content:center;font-size:.75rem}
+.plan-card.selected .plan-check{display:flex}
+/* FORM */
+.sec-label{font-size:.97rem;font-weight:600;color:#d0d0d0;margin-bottom:12px}
+.divider{border:none;border-top:1px solid var(--border);margin-bottom:22px}
+.sec-div{border:none;border-top:1px solid var(--border);margin:24px 0 20px}
+.field-group{margin-bottom:20px}
+.field-error{color:#ff7676;font-size:.78rem;margin:5px 0 7px;display:none}
+.field-error.show{display:block}
+.input-error{border-color:#ff7676!important}
+.field-label{font-size:.93rem;font-weight:700;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.req{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;background:#555;border-radius:50%;font-size:.62rem;color:#ccc;font-weight:700}
+input[type=text],input[type=email],input[type=tel],select{width:100%;padding:15px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:.95rem;outline:none;appearance:none;-webkit-appearance:none;transition:border-color .2s,background .2s;text-align:right}
+input::placeholder{color:#777}
+input:focus,select:focus{border-color:var(--purple);background:#525252}
+/* EMAIL */
+.email-row{display:flex;direction:ltr;width:100%}
+.email-row input{flex:1;min-width:0;border-radius:12px 0 0 12px;border-right:none;text-align:left}
+.email-domain-wrap{position:relative;flex-shrink:0;width:190px}
+.email-domain{width:100%;height:100%;min-height:54px;background:#555;border:1.5px solid var(--border);color:#ddd;padding:0 38px 0 14px;border-radius:0 12px 12px 0;font-size:.88rem;cursor:pointer;appearance:auto;-webkit-appearance:auto;text-align:left}
+.email-domain:focus{border-color:var(--purple)}
+.email-domain option{background:#444;color:#fff}
+.email-row:focus-within input{border-color:var(--purple)}
+/* PHONE */
+.phone-row{display:flex;gap:10px}
+.phone-row .cc-wrap{flex-shrink:0;width:150px}
+.phone-row input{flex:1}
+.select-wrap{position:relative}
+.select-wrap .arr{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:#888}
+/* DATE SPINNER */
+.date-row{display:flex;gap:10px;direction:ltr}
+.sp-col{flex:1;display:flex;flex-direction:column;align-items:center}
+.sp-lbl{font-size:.74rem;color:var(--muted);margin-bottom:5px;font-weight:600}
+.sp-box{background:var(--input-bg);border:1.5px solid var(--border);border-radius:12px;width:100%;height:108px;position:relative;overflow:hidden;cursor:ns-resize;user-select:none}
+.sp-box:focus{outline:2px solid var(--purple)}
+.sp-box::before,.sp-box::after{content:'';position:absolute;left:0;right:0;height:32px;z-index:2;pointer-events:none}
+.sp-box::before{top:0;background:linear-gradient(to bottom,var(--input-bg) 10%,transparent)}
+.sp-box::after{bottom:0;background:linear-gradient(to top,var(--input-bg) 10%,transparent)}
+.sp-hl{position:absolute;top:50%;left:5px;right:5px;height:36px;transform:translateY(-50%);background:rgba(108,92,231,.18);border:1.5px solid var(--purple);border-radius:8px;z-index:1;pointer-events:none}
+.sp-track{display:flex;flex-direction:column;align-items:center;transition:transform .12s ease}
+.sp-item{height:36px;line-height:36px;font-size:1rem;font-weight:700;text-align:center;width:100%;color:var(--muted)}
+.sp-item.sel{color:var(--text);font-size:1.12rem}
+.sp-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;padding:3px 8px;transition:color .2s}
+.sp-btn:hover{color:var(--purple-light)}
+/* GENDER */
+.gender-opts{display:flex;gap:12px;flex-wrap:wrap}
+.g-opt{flex:1;min-width:110px}
+.g-opt input[type=radio]{display:none}
+.g-opt label{display:flex;align-items:center;gap:10px;background:var(--input-bg);border:2px solid var(--border);border-radius:12px;padding:13px 16px;cursor:pointer;font-size:.97rem;font-weight:600;transition:border-color .2s,background .2s}
+.g-opt input:checked+label{border-color:var(--purple);background:rgba(108,92,231,.15)}
+.radio-c{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.g-opt input:checked+label .radio-c{border-color:var(--purple)}
+.radio-d{width:10px;height:10px;border-radius:50%;background:var(--purple);display:none}
+.g-opt input:checked+label .radio-d{display:block}
+/* SUBMIT + STATUS */
+.submit-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--purple);color:#fff;border:none;border-radius:14px;padding:17px;font-family:inherit;font-size:1.05rem;font-weight:700;cursor:pointer;margin-top:14px;transition:background .2s,transform .1s;width:100%}
+.submit-btn:hover{background:var(--purple-light)}
+.submit-btn:active{transform:scale(.98)}
+.submit-btn:disabled{background:#555;cursor:not-allowed}
+.status-msg{margin-top:14px;padding:13px 16px;border-radius:12px;display:none;font-weight:600;font-size:.93rem}
+.status-msg.error{background:var(--error);color:#fff;display:block}
+.status-msg.success{background:var(--success);color:#fff;display:block}
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-ov.active{opacity:1;pointer-events:auto}
+.modal-c{background:#2a2a2a;border:2px solid var(--purple);border-radius:24px;padding:32px 26px;max-width:400px;width:90%;text-align:center;transform:translateY(20px);transition:transform .3s}
+.modal-ov.active .modal-c{transform:translateY(0)}
+.modal-c h2{font-size:1.4rem;color:var(--purple-light);margin-bottom:10px}
+.modal-c p{color:#ccc;font-size:.9rem;margin-bottom:16px;line-height:1.6}
+.id-box{background:#1e1e1e;border:2px dashed var(--purple);border-radius:12px;padding:14px;margin-bottom:16px}
+.id-lbl{font-size:.72rem;text-transform:uppercase;color:#aaa;letter-spacing:1px;margin-bottom:4px}
+.id-num{font-size:2.5rem;font-weight:900;letter-spacing:3px}
+.modal-btn{background:var(--purple);color:#fff;border:none;padding:13px;border-radius:12px;font-family:inherit;font-size:1rem;font-weight:700;cursor:pointer;width:100%;transition:background .2s}
+.modal-btn:hover{background:var(--purple-light)}
+.renew-ico{font-size:3rem;margin-bottom:10px}
+/* RESPONSIVE */
+@media(max-width:700px) and (min-width:501px){.plans-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:500px){
+.page-title h1,.landing-head h1{font-size:1.6rem}
+.plans-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.phone-row .cc-wrap{width:120px}
+.email-domain-wrap{width:150px}
+.email-domain{padding:0 30px 0 8px;font-size:.76rem}}
+@media(max-width:340px){.plans-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <img src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?w=1200&q=80" alt="Gym"
+       onerror="this.style.display='none';this.parentElement.style.background='linear-gradient(135deg,#222,#444)'" />
+  <div class="hero-logo">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(32,32)" id="logo-petals"></g>
+    </svg>
+  </div>
+</div>
+
+<!-- LANDING -->
+<div class="view active" id="view-landing">
+  <div class="container">
+    <div class="landing-head">
+      <h1>مرحباً بك 👋</h1>
+      <p>اختر ما تريد القيام به</p>
+    </div>
+    <div class="option-cards">
+      <div class="option-card" onclick="showView('view-register'); resetPlanSelection()">
+        <div class="opt-icon purple">📝</div>
+        <div class="opt-text"><h3>تسجيل اشتراك جديد</h3><p>انضم إلينا وابدأ رحلتك الرياضية</p></div>
+        <div class="opt-arrow">‹</div>
+      </div>
+      <div class="option-card" onclick="showView('view-renew')">
+        <div class="opt-icon teal">🔄</div>
+        <div class="opt-text"><h3>تجديد اشتراك</h3><p>جدد اشتراكك الحالي باختيار المدة المناسبة</p></div>
+        <div class="opt-arrow">‹</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER VIEW -->
+<div class="view" id="view-register">
+  <div class="container">
+    <button class="back-btn" onclick="showView('view-landing')">← العودة للرئيسية</button>
+    <div class="page-title">
+      <h1>تسجيل اشتراك جديد</h1>
+      <p>اختر الباقة المناسبة ثم أدخل بياناتك</p>
+    </div>
+
+    <!-- Plan picker (cards are built from the PLANS list in the script) -->
+    <p class="plans-title">🏷️ اختر باقة الاشتراك</p>
+    <div class="plans-grid" id="plans-grid"></div>
+
+    <!-- Registration form (hidden until a plan is selected) -->
+    <div id="reg-form-wrap" style="display:none">
+      <form id="registerForm" novalidate>
+        <p class="sec-label">المعلومات الشخصية</p>
+        <hr class="divider" />
+
+        <div class="field-group">
+          <div class="field-label">الاسم الأول <span class="req">*</span></div>
+          <input type="text" id="r-firstName" placeholder="الاسم الأول" required />
+          <div id="firstName-error" class="field-error"></div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">اسم العائلة <span class="req">*</span></div>
+          <input type="text" id="r-lastName" placeholder="اسم العائلة" required />
+          <div id="lastName-error" class="field-error"></div>
+        </div>
+
+        <hr class="sec-div" />
+
+        <!-- Phone: country code + local number -->
+        <div class="field-group">
+          <div class="field-label">رقم الهاتف <span class="req">*</span></div>
+          <div id="phone-error" class="field-error"></div>
+          <div class="phone-row">
+            <div class="cc-wrap select-wrap">
+              <select id="r-cc"></select>
+              <span class="arr">⌄</span>
+            </div>
+            <input type="tel" id="r-phone" placeholder="05X XXX XXXX" required maxlength="10" inputmode="numeric">
+          </div>
+        </div>
+
+        <!-- Date of birth (three spinners, value is stored in the hidden input) -->
+        <div class="field-group">
+          <div class="field-label">تاريخ الميلاد <span class="req">*</span></div>
+          <div class="date-row">
+            <div class="sp-col">
+              <div class="sp-lbl">اليوم</div>
+              <button type="button" class="sp-btn" onclick="spinStep('day',-1)">▲</button>
+              <div class="sp-box" id="spin-day" tabindex="0"><div class="sp-hl"></div><div class="sp-track" id="track-day"></div></div>
+              <button type="button" class="sp-btn" onclick="spinStep('day',1)">▼</button>
+            </div>
+            <div class="sp-col">
+              <div class="sp-lbl">الشهر</div>
+              <button type="button" class="sp-btn" onclick="spinStep('month',-1)">▲</button>
+              <div class="sp-box" id="spin-month" tabindex="0"><div class="sp-hl"></div><div class="sp-track" id="track-month"></div></div>
+              <button type="button" class="sp-btn" onclick="spinStep('month',1)">▼</button>
+            </div>
+            <div class="sp-col">
+              <div class="sp-lbl">السنة</div>
+              <button type="button" class="sp-btn" onclick="spinStep('year',-1)">▲</button>
+              <div class="sp-box" id="spin-year" tabindex="0"><div class="sp-hl"></div><div class="sp-track" id="track-year"></div></div>
+              <button type="button" class="sp-btn" onclick="spinStep('year',1)">▼</button>
+            </div>
+          </div>
+          <input type="hidden" id="r-dob" />
+        </div>
+
+        <hr class="sec-div" />
+
+        <!-- Email: username + domain chosen from a list -->
+        <div class="field-group">
+          <div class="field-label">البريد الإلكتروني <span class="req">*</span></div>
+          <div class="email-row">
+            <input type="text" id="r-email-prefix" placeholder="اسم البريد" required maxlength="30"
+                   autocomplete="username" dir="ltr" spellcheck="false" autocapitalize="none" autocorrect="off" />
+            <div class="email-domain-wrap">
+              <select id="r-email-domain" class="email-domain" aria-label="نهاية البريد الإلكتروني">
+                <option value="@gmail.com">@gmail.com</option>
+                <option value="@hotmail.com">@hotmail.com</option>
+                <option value="@icloud.com">@icloud.com</option>
+                <option value="@yahoo.com">@yahoo.com</option>
+                <option value="@outlook.com">@outlook.com</option>
+                <option value="@live.com">@live.com</option>
+                <option value="@msn.com">@msn.com</option>
+                <option value="@aol.com">@aol.com</option>
+              </select>
+            </div>
+          </div>
+          <div id="email-error" class="field-error"></div>
+          <!-- Full email (username + domain) that is sent to n8n -->
+          <input type="hidden" id="r-email" />
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">المدينة <span class="req">*</span></div>
+          <input type="text" id="r-city" placeholder="المدينة" required maxlength="20" />
+          <div id="city-error" class="field-error"></div>
+        </div>
+
+        <hr class="sec-div" />
+
+        <div class="field-group">
+          <div class="field-label">الجنس <span class="req">*</span></div>
+          <div class="gender-opts">
+            <div class="g-opt">
+              <input type="radio" name="gender" id="g-male" value="male" required />
+              <label for="g-male"><div class="radio-c"><div class="radio-d"></div></div>ذكر 👨</label>
+            </div>
+            <div class="g-opt">
+              <input type="radio" name="gender" id="g-female" value="female" />
+              <label for="g-female"><div class="radio-c"><div class="radio-d"></div></div>أنثى 👩</label>
+            </div>
+          </div>
+        </div>
+
+        <input type="hidden" id="r-plan" />
+        <button type="submit" class="submit-btn" id="r-submitBtn">إرسال التسجيل ←</button>
+        <div id="r-status" class="status-msg"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- RENEW VIEW -->
+<div class="view" id="view-renew">
+  <div class="container">
+    <button class="back-btn" onclick="showView('view-landing')">← العودة للرئيسية</button>
+    <div class="page-title">
+      <h1>تجديد الاشتراك</h1>
+      <p>أدخل رقم هاتفك واختر مدة التجديد</p>
+    </div>
+    <form id="renewForm">
+      <div class="field-group">
+        <div class="field-label">رقم الهاتف <span class="req">*</span></div>
+        <div id="renew-phone-error" class="field-error"></div>
+        <div class="phone-row">
+          <div class="cc-wrap select-wrap">
+            <select id="rn-cc"></select>
+            <span class="arr">⌄</span>
+          </div>
+          <input type="tel" id="rn-phone" placeholder="05X XXX XXXX" required maxlength="10" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">مدة التجديد <span class="req">*</span></div>
+        <div class="select-wrap">
+          <select id="rn-duration" required onchange="this.style.color=this.value?'#fff':'#777'">
+            <option value="" disabled selected style="color:#777">اختر المدة</option>
+          </select>
+          <span class="arr">⌄</span>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="rn-submitBtn">تجديد الاشتراك ←</button>
+      <div id="rn-status" class="status-msg"></div>
+    </form>
+  </div>
+</div>
+
+<!-- REGISTER MODAL (success or duplicate phone) -->
+<div class="modal-ov" id="modal-register">
+  <div class="modal-c">
+    <div id="modal-success-content">
+      <h2>🎉 تم التسجيل بنجاح!</h2>
+      <p>مرحباً بك في عائلتنا! هذا هو رقم عضويتك الفريد، استخدمه عند المدخل لتسجيل بصمتك.</p>
+      <div class="id-box">
+        <div class="id-lbl">رقم العضوية</div>
+        <div class="id-num" id="modal-id">--</div>
+        <div class="id-lbl" style="margin-top:14px">مدة الاشتراك</div>
+        <div class="id-num" id="modal-plan" style="font-size:1.25rem">--</div>
+      </div>
+    </div>
+    <div id="modal-error-content" style="display:none">
+      <div style="font-size:2.8rem;margin-bottom:12px">⚠️</div>
+      <h2 style="color:#f87171;margin-bottom:10px">رقم مسجّل مسبقاً</h2>
+      <p style="color:#fca5a5;margin-bottom:0;line-height:1.7">
+        رقم الهاتف هذا مسجّل بالفعل في النظام.<br>
+        إذا أردت تجديد اشتراكك، استخدم خيار <strong>تجديد الاشتراك</strong>.
+      </p>
+    </div>
+    <button class="modal-btn" style="margin-top:20px" onclick="closeModal('modal-register')">حسناً</button>
+  </div>
+</div>
+
+<!-- RENEW MODAL -->
+<div class="modal-ov" id="modal-renew">
+  <div class="modal-c">
+    <div class="renew-ico" id="renew-modal-ico">✅</div>
+    <h2 id="renew-modal-title">تم إرسال طلب التجديد!</h2>
+    <p id="renew-modal-text">سيتم معالجة طلبك وتجديد اشتراكك قريباً. شكراً لك!</p>
+    <button class="modal-btn" onclick="closeModal('modal-renew')">حسناً</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Config ---------- */
+
+// n8n webhook that receives registrations and renewals
+// (n8n stores the members in Supabase)
+const N8N = 'YOUR_N8N_WEBHOOK_URL';
+
+// Subscription plans: one list feeds the plan cards, the renew dropdown and the success modal
+const PLANS = [
+  { value: '1_month',  title: 'شهر',    full: 'شهر واحد',  days: 30,  price: 200,  icon: '🗓️' },
+  { value: '2_months', title: 'شهرين',  full: 'شهرين',     days: 60,  price: 350,  icon: '📅' },
+  { value: '3_months', title: '3 أشهر', full: '3 أشهر',    days: 90,  price: 500,  icon: '⭐', badge: 'الأكثر طلباً' },
+  { value: '6_months', title: '6 أشهر', full: '6 أشهر',    days: 180, price: 800,  icon: '💪' },
+  { value: '1_year',   title: 'سنة',    full: 'سنة كاملة', days: 365, price: 1250, icon: '🏆' }
+];
+
+// Country calling codes ("flag +code" separated by |)
+const COUNTRY_CODES = `🇵🇸 +970|🇮🇱 +972|🇦🇫 +93|🇦🇱 +355|🇩🇿 +213|🇦🇩 +376|🇦🇴 +244|🇦🇷 +54|🇦🇲 +374|🇦🇺 +61|🇦🇹 +43|🇦🇿 +994|🇧🇭 +973|🇧🇩 +880|🇧🇪 +32|🇧🇿 +501|🇧🇯 +229|🇧🇹 +975|🇧🇴 +591|🇧🇦 +387|🇧🇼 +267|🇧🇷 +55|🇧🇳 +673|🇧🇬 +359|🇧🇫 +226|🇧🇮 +257|🇰🇭 +855|🇨🇲 +237|🇨🇦 +1|🇨🇻 +238|🇨🇫 +236|🇹🇩 +235|🇨🇱 +56|🇨🇳 +86|🇨🇴 +57|🇰🇲 +269|🇨🇩 +243|🇨🇬 +242|🇨🇷 +506|🇭🇷 +385|🇨🇺 +53|🇨🇾 +357|🇨🇿 +420|🇩🇰 +45|🇩🇯 +253|🇩🇴 +1-809|🇪🇨 +593|🇪🇬 +20|🇸🇻 +503|🇬🇶 +240|🇪🇷 +291|🇪🇪 +372|🇪🇹 +251|🇫🇯 +679|🇫🇮 +358|🇫🇷 +33|🇬🇦 +241|🇬🇲 +220|🇬🇪 +995|🇩🇪 +49|🇬🇭 +233|🇬🇷 +30|🇬🇹 +502|🇬🇳 +224|🇬🇼 +245|🇬🇾 +592|🇭🇹 +509|🇭🇳 +504|🇭🇺 +36|🇮🇸 +354|🇮🇳 +91|🇮🇩 +62|🇮🇷 +98|🇮🇶 +964|🇮🇪 +353|🇮🇹 +39|🇯🇲 +1-876|🇯🇵 +81|🇯🇴 +962|🇰🇿 +7|🇰🇪 +254|🇰🇵 +850|🇰🇷 +82|🇰🇼 +965|🇰🇬 +996|🇱🇦 +856|🇱🇻 +371|🇱🇧 +961|🇱🇸 +266|🇱🇷 +231|🇱🇾 +218|🇱🇮 +423|🇱🇹 +370|🇱🇺 +352|🇲🇬 +261|🇲🇼 +265|🇲🇾 +60|🇲🇻 +960|🇲🇱 +223|🇲🇹 +356|🇲🇷 +222|🇲🇽 +52|🇲🇩 +373|🇲🇳 +976|🇲🇦 +212|🇲🇿 +258|🇳🇦 +264|🇳🇵 +977|🇳🇱 +31|🇳🇿 +64|🇳🇮 +505|🇳🇪 +227|🇳🇬 +234|🇳🇴 +47|🇴🇲 +968|🇵🇰 +92|🇵🇦 +507|🇵🇬 +675|🇵🇾 +595|🇵🇪 +51|🇵🇭 +63|🇵🇱 +48|🇵🇹 +351|🇶🇦 +974|🇷🇴 +40|🇷🇺 +7|🇷🇼 +250|🇸🇦 +966|🇸🇳 +221|🇷🇸 +381|🇸🇱 +232|🇸🇬 +65|🇸🇰 +421|🇸🇮 +386|🇸🇴 +252|🇿🇦 +27|🇪🇸 +34|🇱🇰 +94|🇸🇩 +249|🇸🇷 +597|🇸🇿 +268|🇸🇪 +46|🇨🇭 +41|🇸🇾 +963|🇹🇼 +886|🇹🇯 +992|🇹🇿 +255|🇹🇭 +66|🇹🇬 +228|🇹🇳 +216|🇹🇷 +90|🇹🇲 +993|🇺🇬 +256|🇺🇦 +380|🇦🇪 +971|🇬🇧 +44|🇺🇸 +1|🇺🇾 +598|🇺🇿 +998|🇻🇪 +58|🇻🇳 +84|🇾🇪 +967|🇿🇲 +260|🇿🇼 +263`.split('|');
+
+/* ---------- Helpers ---------- */
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function openModal(id)  { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// Show or clear an error under a field
+function setError(input, errorEl, message) {
+  errorEl.textContent = message ? '⚠️ ' + message : '';
+  errorEl.classList.toggle('show', !!message);
+  input.classList.toggle('input-error', !!message);
+  return !message;
+}
+
+/* ---------- Build the page parts from the lists above ---------- */
+
+// Logo: 7 petals rotated around the center
+const petal = 'M0,-14 C6,-14 12,-8 12,0 C12,4 10,7 7,10 L0,0 Z';
+document.getElementById('logo-petals').innerHTML =
+  [0, 51.4, 102.8, 154.2, 205.6, 257, 308.4]
+    .map(a => `<path d="${petal}" transform="rotate(${a})"/>`).join('');
+
+// Plan cards
+document.getElementById('plans-grid').innerHTML = PLANS.map(p => `
+  <div class="plan-card" id="plan-${p.value}" onclick="selectPlan('${p.value}')">
+    ${p.badge ? `<div class="plan-badge">${p.badge}</div>` : ''}
+    <div class="plan-check">✓</div>
+    <div class="plan-icon">${p.icon}</div>
+    <div class="plan-dur">${p.title}<span class="plan-days">/ ${p.days} يوم</span></div>
+    <div class="plan-price">${p.price}</div>
+    <div class="plan-cur">شيكل</div>
+  </div>`).join('');
+
+// Country code dropdowns (register + renew)
+['r-cc', 'rn-cc'].forEach(id => {
+  document.getElementById(id).innerHTML = COUNTRY_CODES.map(c => {
+    const code = c.split(' ')[1];
+    return `<option value="${code}">${c}</option>`;
+  }).join('');
+});
+
+// Renew duration dropdown
+document.getElementById('rn-duration').insertAdjacentHTML('beforeend',
+  PLANS.map(p => `<option value="${p.value}">${p.full} / ${p.days} يوم — ${p.price} ₪</option>`).join(''));
+
+/* ---------- Plan selection ---------- */
+
+let selectedPlan = null;
+
+function selectPlan(value) {
+  selectedPlan = value;
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('plan-' + value).classList.add('selected');
+  document.getElementById('reg-form-wrap').style.display = 'block';
+  document.getElementById('r-plan').value = value;
+  // Scroll to the form after it becomes visible
+  setTimeout(() => {
+    document.getElementById('reg-form-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+}
+
+function resetPlanSelection() {
+  selectedPlan = null;
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('reg-form-wrap').style.display = 'none';
+  document.getElementById('r-plan').value = '';
+}
+
+/* ---------- Date of birth spinners ---------- */
+
+const MONTHS = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const curY = new Date().getFullYear();
+
+const SP = {
+  day:   { items: Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0')), idx: new Date().getDate() - 1 },
+  month: { items: MONTHS, idx: new Date().getMonth() },
+  year:  { items: Array.from({ length: curY - 1939 }, (_, i) => curY - i), idx: 0 }
+};
+
+// Build the scrolling list (one empty item before and after for the fade effect)
+function buildTrack(key) {
+  const track = document.getElementById('track-' + key);
+  track.innerHTML = '';
+  [null, ...SP[key].items, null].forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'sp-item';
+    d.textContent = item || '';
+    track.appendChild(d);
+  });
+  renderSp(key);
+}
+
+// Move the list so the selected item sits in the highlight box
+function renderSp(key) {
+  const sp = SP[key];
+  const track = document.getElementById('track-' + key);
+  track.style.transform = `translateY(${-(sp.idx + 1) * 36 + 36}px)`;
+  Array.from(track.children).forEach((el, i) => el.classList.toggle('sel', i === sp.idx + 1));
+  updateDOB();
+}
+
+// Move one step up (-1) or down (+1), wrapping around at the ends
+function spinStep(key, dir) {
+  const len = SP[key].items.length;
+  SP[key].idx = (SP[key].idx + dir + len) % len;
+  renderSp(key);
+}
+
+// Save the chosen date as YYYY-MM-DD in the hidden input
+function updateDOB() {
+  const d = String(SP.day.idx + 1).padStart(2, '0');
+  const m = String(SP.month.idx + 1).padStart(2, '0');
+  const y = SP.year.items[SP.year.idx];
+  document.getElementById('r-dob').value = `${y}-${m}-${d}`;
+}
+
+// Mouse wheel, touch drag and arrow keys
+function addSpinEvents(key) {
+  const box = document.getElementById('spin-' + key);
+  let startY = 0;
+
+  box.addEventListener('wheel', e => {
+    e.preventDefault();
+    spinStep(key, e.deltaY > 0 ? 1 : -1);
+  }, { passive: false });
+
+  box.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+
+  box.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const dy = startY - e.touches[0].clientY;
+    if (Math.abs(dy) > 16) {
+      spinStep(key, dy > 0 ? 1 : -1);
+      startY = e.touches[0].clientY;
+    }
+  }, { passive: false });
+
+  box.addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp')   { e.preventDefault(); spinStep(key, -1); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); spinStep(key, 1); }
+  });
+}
+
+['day', 'month', 'year'].forEach(k => { buildTrack(k); addSpinEvents(k); });
+
+/* ---------- Form fields ---------- */
+
+const firstNameInput = document.getElementById('r-firstName');
+const lastNameInput  = document.getElementById('r-lastName');
+const cityInput      = document.getElementById('r-city');
+const phoneInput     = document.getElementById('r-phone');
+const emailPrefix    = document.getElementById('r-email-prefix');
+const emailDomain    = document.getElementById('r-email-domain');
+const emailInput     = document.getElementById('r-email');
+const emailError     = document.getElementById('email-error');
+const firstNameError = document.getElementById('firstName-error');
+const lastNameError  = document.getElementById('lastName-error');
+const cityError      = document.getElementById('city-error');
+const phoneError     = document.getElementById('phone-error');
+
+/* ---------- Validation ---------- */
+
+// Letters only (any language), words separated by a space or a dash
+const LETTERS_ONLY = /^[\p{L}]+(?:[\s-][\p{L}]+)*$/u;
+
+// Used for first name, last name and city
+function validateText(input, errorEl, emptyMsg, shortMsg) {
+  const value = input.value.trim().replace(/\s+/g, ' ');
+  input.value = value;
+  if (value === '')              return setError(input, errorEl, emptyMsg);
+  if (value.length < 2)          return setError(input, errorEl, shortMsg);
+  if (!LETTERS_ONLY.test(value)) return setError(input, errorEl, 'يسمح فقط بالحروف والمسافات');
+  return setError(input, errorEl, '');
+}
+
+const validateFirstName = () => validateText(firstNameInput, firstNameError, 'يرجى إدخال الاسم', 'يجب أن يحتوي الاسم على حرفين على الأقل');
+const validateLastName  = () => validateText(lastNameInput, lastNameError, 'يرجى إدخال الاسم', 'يجب أن يحتوي الاسم على حرفين على الأقل');
+const validateCity      = () => validateText(cityInput, cityError, 'يرجى إدخال المدينة', 'اسم المدينة قصير جداً');
+
+function validatePhone() {
+  const value = phoneInput.value.trim();
+  if (value === '')           return setError(phoneInput, phoneError, 'يرجى إدخال رقم الهاتف');
+  if (!/^\d{10}$/.test(value)) return setError(phoneInput, phoneError, 'يجب إدخال رقم هاتف مكوّن من 10 أرقام');
+  return setError(phoneInput, phoneError, '');
+}
+
+function validateEmail() {
+  const value = emailPrefix.value.trim();
+  const lower = value.toLowerCase();
+  emailInput.value = '';
+
+  // Empty field: no message, but the form is not valid
+  if (value === '') { setError(emailPrefix, emailError, ''); return false; }
+
+  // The domain must come from the dropdown, not from the text box
+  if (lower.includes('@') || lower.includes('.com')) {
+    return setError(emailPrefix, emailError, 'اكتب اسم البريد فقط، واختر نهاية البريد من القائمة');
+  }
+  // English letters, numbers and single dots only
+  if (!/^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/.test(value)) {
+    return setError(emailPrefix, emailError, 'يسمح فقط بالأحرف الإنجليزية والأرقام والنقاط');
+  }
+  if (value.length < 6)  return setError(emailPrefix, emailError, 'اسم البريد يجب أن يحتوي على 6 أحرف على الأقل');
+  if (value.length > 30) return setError(emailPrefix, emailError, 'اسم البريد يجب ألا يتجاوز 30 حرفًا');
+
+  // Names reserved by Gmail
+  if (emailDomain.value === '@gmail.com' && (lower === 'abuse' || lower === 'postmaster')) {
+    return setError(emailPrefix, emailError, 'اسم البريد هذا محجوز في Gmail ولا يمكن استخدامه');
+  }
+
+  // Valid: build the full email
+  setError(emailPrefix, emailError, '');
+  emailInput.value = value + emailDomain.value;
+  return true;
+}
+
+/* ---------- Live input cleaning ---------- */
+
+// Remove everything except English letters, numbers and dots
+emailPrefix.addEventListener('input', function () {
+  this.value = this.value.replace(/[^a-zA-Z0-9.]/g, '');
+  validateEmail();
+});
+emailDomain.addEventListener('change', validateEmail);
+
+// Names: letters and spaces only
+firstNameInput.addEventListener('input', function () {
+  this.value = this.value.replace(/[^\p{L}\s]/gu, '');
+  validateFirstName();
+});
+lastNameInput.addEventListener('input', function () {
+  this.value = this.value.replace(/[^\p{L}\s]/gu, '');
+  validateLastName();
+});
+
+// City: letters and spaces only, 20 characters max
+cityInput.addEventListener('input', function () {
+  this.value = this.value.replace(/[^\p{L}\s]/gu, '').slice(0, 20);
+  validateCity();
+});
+
+// Phone: digits only, 10 max
+phoneInput.addEventListener('input', function () {
+  this.value = this.value.replace(/\D/g, '').slice(0, 10);
+  validatePhone();
+});
+
+/* ---------- Registration submit ---------- */
+
+document.getElementById('registerForm').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const btn = document.getElementById('r-submitBtn');
+  const st  = document.getElementById('r-status');
+
+  if (!selectedPlan) {
+    st.className = 'status-msg error';
+    st.textContent = 'يرجى اختيار باقة الاشتراك أولاً';
+    return;
+  }
+
+  const gender = document.querySelector('input[name="gender"]:checked');
+  if (!gender) {
+    st.className = 'status-msg error';
+    st.textContent = 'يرجى اختيار الجنس';
+    return;
+  }
+
+  // Run every check (no early exit) so all errors show at once
+  const results = [validateFirstName(), validateLastName(), validateCity(), validatePhone(), validateEmail()];
+  if (results.includes(false)) {
+    st.className = 'status-msg error';
+    st.textContent = 'يرجى تصحيح البيانات المدخلة قبل التسجيل';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'جاري الإرسال...';
+  st.className = 'status-msg';
+
+  const payload = {
+    action: 'subscription',
+    plan: selectedPlan,
+    first_name: firstNameInput.value,
+    last_name: lastNameInput.value,
+    phone: document.getElementById('r-cc').value + phoneInput.value,
+    dob: document.getElementById('r-dob').value,
+    email: emailInput.value,   // full email, e.g. name@gmail.com
+    city: cityInput.value,
+    gender: gender.value,
+    registration_date: new Date().toISOString()
+  };
+
+  try {
+    const res = await fetch(N8N, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(res.status);
+
+    // The reply may be empty or not valid JSON, so parse it safely
+    let data = {};
+    try {
+      const text = await res.text();
+      data = text ? JSON.parse(text) : {};
+    } catch (_) { data = {}; }
+
+    // n8n may return an object or an array with one object
+    const memberId = data.id || (Array.isArray(data) && data[0]?.id) || null;
+    const status = (data.status || '').toLowerCase();
+    const msg = (data.message || '').toLowerCase();
+
+    // The phone number already exists in the database
+    const isError = status === 'error' || msg.includes('already') || msg.includes('exists') || msg.includes('duplicate');
+
+    document.getElementById('modal-success-content').style.display = isError ? 'none' : 'block';
+    document.getElementById('modal-error-content').style.display = isError ? 'block' : 'none';
+
+    if (!isError) {
+      const plan = PLANS.find(p => p.value === selectedPlan);
+      document.getElementById('modal-id').textContent = memberId;
+      document.getElementById('modal-plan').textContent = plan ? `${plan.full} / ${plan.days} يوم` : '--';
+
+      // Clear the form
+      document.getElementById('registerForm').reset();
+      emailInput.value = '';
+      setError(emailPrefix, emailError, '');
+      resetPlanSelection();
+    }
+    openModal('modal-register');
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    st.className = 'status-msg error';
+    st.textContent = 'حدث خطأ أثناء الإرسال. تحقق من الاتصال أو تأكد من تشغيل Webhook في n8n.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'إرسال التسجيل ←';
+  }
+});
+
+/* ---------- Renewal ---------- */
+
+const renewPhoneInput = document.getElementById('rn-phone');
+const renewPhoneError = document.getElementById('renew-phone-error');
+
+function validateRenewPhone() {
+  const value = renewPhoneInput.value.trim();
+  if (value === '') { setError(renewPhoneInput, renewPhoneError, ''); return false; }
+  if (value.length < 10) return setError(renewPhoneInput, renewPhoneError, 'يجب إدخال 10 أرقام');
+  return setError(renewPhoneInput, renewPhoneError, '');
+}
+
+renewPhoneInput.addEventListener('input', function () {
+  this.value = this.value.replace(/\D/g, '').slice(0, 10);
+  validateRenewPhone();
+});
+
+// Fill the renew popup with the data n8n sent back
+// (n8n can return: icon, title, titleColor, message)
+function showRenewModal(data) {
+  data = Array.isArray(data) ? (data[0] || {}) : (data || {});
+  document.getElementById('renew-modal-ico').textContent = data.icon || 'ℹ️';
+  const title = document.getElementById('renew-modal-title');
+  title.textContent = data.title || 'تنبيه';
+  title.style.color = data.titleColor || '#8b7cf8';
+  document.getElementById('renew-modal-text').textContent = data.message || 'تم استلام الطلب.';
+  openModal('modal-renew');
+}
+
+document.getElementById('renewForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!validateRenewPhone()) return;
+
+  const btn = document.getElementById('rn-submitBtn');
+  const st  = document.getElementById('rn-status');
+  btn.disabled = true;
+  btn.textContent = 'جاري الإرسال...';
+  st.className = 'status-msg';
+
+  const payload = {
+    action: 'Renew subscription',
+    phone: document.getElementById('rn-cc').value + renewPhoneInput.value,
+    duration: document.getElementById('rn-duration').value,
+    renewal_date: new Date().toISOString()
+  };
+
+  try {
+    const res = await fetch(N8N, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(res.status);
+
+    let data = {};
+    try { data = await res.json(); } catch (_) {}
+
+    showRenewModal(data);
+    document.getElementById('renewForm').reset();
+    document.getElementById('rn-duration').style.color = '#777';
+
+  } catch {
+    st.className = 'status-msg error';
+    st.textContent = 'حدث خطأ أثناء الإرسال. تحقق من الاتصال.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'تجديد الاشتراك ←';
+  }
+});
+</script>
+</body>
+</html>
