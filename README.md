@@ -15,10 +15,10 @@ Website / ESP32  →  n8n webhook  →  Supabase (database)
 
 ## Tech stack
 
-- **Website:** HTML, CSS, JavaScript (hosted on Netlify)
+- **Website:** HTML, CSS, JavaScript.
 - **Automation:** n8n
 - **Database:** Supabase
-- **Hardware:** ESP32 programmed in C++ (Arduino)
+- **Hardware:** ESP32 programmed in C++.
 
 ## Hardware
 
