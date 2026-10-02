@@ -44,17 +44,6 @@ Website / ESP32  →  n8n webhook  →  Supabase (database)
 - `*` Clear the current input
 - `**` (double press) Go back
 
-## Folder structure
-
-```
-gym-access-system/
-├── website/
-│   └── index.html
-├── hardware/
-│   └── gym_access.ino
-└── README.md
-```
-
 ## Setup
 
 **Website**
@@ -70,11 +59,6 @@ gym-access-system/
 1. Create a Supabase project with a members table (name, phone, email, plan, RFID UID, subscription end date).
 2. Create an n8n workflow with a webhook that handles these actions: `subscription`, `Renew subscription`, `enroll` and `sign_in`.
 
-## Note
-
-Do not upload your real WiFi password or webhook URL to GitHub. Keep the placeholders in the public code.
-
 ## Author
 
-Mohammad Salous, Computer Engineering student at An-Najah National University.
-[GitHub](https://github.com/Mohammad-Salous) · [LinkedIn](https://www.linkedin.com/in/mohammad-salous)
+Mohammad Salous, Computer Engineering student at An-Najah National University. [LinkedIn](https://www.linkedin.com/in/mohammad-salous)
