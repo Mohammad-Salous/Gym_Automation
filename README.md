@@ -1,4 +1,4 @@
-# Gym Access System
+# Gym Access System (Using Automation on n8n )
 
 A simple access control system for an iron gym. Members register on a website, link an RFID card, and open the door by scanning the card. The door only opens if the subscription is active.
 
