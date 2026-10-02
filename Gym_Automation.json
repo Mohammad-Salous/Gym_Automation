@@ -1,0 +1,1507 @@
+{
+  "name": "Gym_Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "9719b03d-4daa-44af-b9e6-0114d2cac929",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -6000,
+        720
+      ],
+      "id": "d48f04ef-ab4e-4d62-a8b7-dfcd011b4abf",
+      "name": "Webhook",
+      "webhookId": "9719b03d-4daa-44af-b9e6-0114d2cac929"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d44f152a-9acd-492b-bf9f-366163c2d78e",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "subscription",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f4dd9e9a-c5f1-41a1-be3c-89d75c8fc36d",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "Renew subscription",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2f57ad02-d661-4103-b3af-c9bc480d2f50",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "enroll",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "11214146-9d3d-4a29-b20a-1173ba261d12",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "sign_in",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -5664,
+        688
+      ],
+      "id": "7e174952-f4b8-436c-95d2-cbc9b33419af",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "tableId": "members",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "name",
+              "fieldValue": "={{ $('Webhook').item.json.body.first_name }} {{ $('Webhook').item.json.body.last_name }}"
+            },
+            {
+              "fieldId": "phone",
+              "fieldValue": "={{ $('Webhook').item.json.body.phone }}"
+            },
+            {
+              "fieldId": "subscription_start",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            },
+            {
+              "fieldId": "subscription_end",
+              "fieldValue": "={{ \n  (() => {\n    const plan = $('Webhook').first().json.body.plan;\n\n    let daysToAdd = 30;\n    if (plan === '1_year' || plan === 'year') daysToAdd = 365;\n    else if (plan === '6_months') daysToAdd = 180;\n    else if (plan === '3_months') daysToAdd = 90;\n    else if (plan === '2_months') daysToAdd = 60;\n\n    // استخدام التوقيت الحالي\n    const expiry = new Date();\n    expiry.setDate(expiry.getDate() + daysToAdd);\n\n    return expiry.toISOString();\n  })()\n}}"
+            },
+            {
+              "fieldId": "is_active",
+              "fieldValue": "true"
+            },
+            {
+              "fieldId": "date of birth",
+              "fieldValue": "={{ $('Webhook').item.json.body.dob\n}}"
+            },
+            {
+              "fieldId": "gender",
+              "fieldValue": "={{ $('Webhook').item.json.body.gender }}"
+            },
+            {
+              "fieldId": "plan",
+              "fieldValue": "={{ $('Webhook').item.json.body.plan }}"
+            },
+            {
+              "fieldId": "Email",
+              "fieldValue": "={{ $('Webhook').item.json.body.email }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4480,
+        -16
+      ],
+      "id": "1ee19ed8-b703-48a5-a6f5-f0d8b0531cbc",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "11b223a0-4de2-4a3f-848f-32e4961d0c7f",
+              "leftValue": "={{ $json.phone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4832,
+        -32
+      ],
+      "id": "8ea5a677-5263-4144-9b3c-61866691f80b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"id\": {{ $json.id }}\n}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        -16
+      ],
+      "id": "6c927a4a-12c9-43d7-86ff-d86c536e562d",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2c6e3af3-2662-4af5-b0ef-c5622d9f22f3",
+              "leftValue": "={{ $json.is_active }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4480,
+        256
+      ],
+      "id": "7ac7dd97-8158-4369-b41d-0cf5796e6925",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"icon\": \"ℹ️\",\n  \"title\": \"الاشتراك ما زال فعالاً\",\n  \"titleColor\": \"#fbbf24\",\n  \"message\": \"هذا الاشتراك ما زال فعالاً حالياً.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        192
+      ],
+      "id": "fdddbd15-d43c-4a0c-b0ea-2b528ea59396",
+      "name": "Respond to Webhook3"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"icon\": \"✅\",\n  \"title\": \"تم إرسال طلب التجديد!\",\n  \"titleColor\": \"#8b7cf8\",\n  \"message\": \"تم تجديد اشتراكك بنجاح !\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        352
+      ],
+      "id": "598aee73-bc03-47d9-b021-86651900f647",
+      "name": "Respond to Webhook4"
+    },
+    {
+      "parameters": {
+        "content": "# Subscription",
+        "height": 400,
+        "width": 1328,
+        "color": "#A49132"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5168,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "ec436e7c-be96-4bb7-9105-1d79c3e2ea5c",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Renew Subscription",
+        "height": 608,
+        "width": 1328,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5168,
+        176
+      ],
+      "typeVersion": 1,
+      "id": "00d185e3-5d40-4125-95c1-e078ad9024b2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Sign_in",
+        "height": 672,
+        "width": 1328,
+        "color": "#1B6416"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5168,
+        1536
+      ],
+      "typeVersion": 1,
+      "id": "fb3fe541-e553-428a-8139-208f5fbb8ca9",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Enroll",
+        "height": 752,
+        "width": 1328,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5168,
+        784
+      ],
+      "typeVersion": 1,
+      "id": "025f98e1-5f32-46a1-a647-b22329c3eb13",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "11b223a0-4de2-4a3f-848f-32e4961d0c7f",
+              "leftValue": "={{ $json.phone }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4832,
+        272
+      ],
+      "id": "0b386b55-e684-49c6-a85e-7a0ae9864854",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "members",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "subscription_end",
+              "fieldValue": "={{ \n  (() => {\n    const rawPlan = String($('Webhook').first().json.body.duration || $('Webhook').first().json.body.plan || '').toLowerCase();\n    const expiry = new Date();\n    let daysToAdd = 30;\n\n    if (rawPlan.includes('year') || rawPlan.includes('12') || rawPlan === '1') {\n      daysToAdd = 365;\n    } else if (rawPlan.includes('6')) {\n      daysToAdd = 180;\n    } else if (rawPlan.includes('3')) {\n      daysToAdd = 90;\n    } else if (rawPlan.includes('2')) {\n      daysToAdd = 60;\n    }\n\n    expiry.setDate(expiry.getDate() + daysToAdd);\n    return expiry.toISOString();\n  })()\n}}"
+            },
+            {
+              "fieldId": "is_active",
+              "fieldValue": "={{ true }}"
+            },
+            {
+              "fieldId": "subscription_start",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4256,
+        352
+      ],
+      "id": "e13adb51-bb9a-42ee-b8a4-821b516e9fa7",
+      "name": "Update a row1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -6208,
+        -160
+      ],
+      "id": "b9a56646-6767-494a-b9fb-e0e301830caa",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "members",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "is_active",
+              "condition": "is",
+              "keyValue": "={{ true }}"
+            },
+            {
+              "keyName": "subscription_end",
+              "condition": "lt",
+              "keyValue": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5888,
+        -160
+      ],
+      "id": "2c1afeca-a3e2-4995-9ba7-8d2d0c345187",
+      "name": "Get many rows",
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "members",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('Get many rows').item.json.id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "is_active",
+              "fieldValue": "={{ false }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5584,
+        -160
+      ],
+      "id": "bb62af32-6a5f-4a0c-a363-80409284e192",
+      "name": "Update a row2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"error\",\n  \"message\": \"Member already exists with this phone number\"\n}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        -208
+      ],
+      "id": "7312b18e-9f90-4dc6-a7b9-5b4083b73deb",
+      "name": "Respond to Webhook7"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"icon\": \"⚠️\",\n  \"title\": \"الرقم غير موجود\",\n  \"titleColor\": \"#f87171\",\n  \"message\": \"رقم الهاتف الذي أدخلته غير مسجل في النظام. تأكد من الرقم وحاول مرة أخرى.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        560
+      ],
+      "id": "771a4a8a-e18f-416b-a8ba-1f9da16380fe",
+      "name": "Respond to Webhook8"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"status\": \"ready_for_rfid\",\n  \"message\": \"Member found. Please scan your RFID card\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        784
+      ],
+      "id": "b430be05-b287-4bb2-83d8-741cc1f4b131",
+      "name": "Respond to Webhook10"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"status\": \"not_found\",\n  \"message\": \"Member ID does not exist\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        1088
+      ],
+      "id": "f6147771-b060-460f-83dc-302265c7aea7",
+      "name": "Respond to Webhook11",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d44f152a-9acd-492b-bf9f-366163c2d78e",
+                    "leftValue": "={{ $json.body.stage }}",
+                    "rightValue": "check",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f4dd9e9a-c5f1-41a1-be3c-89d75c8fc36d",
+                    "leftValue": "={{ $json.body.stage }}",
+                    "rightValue": "register",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -5152,
+        896
+      ],
+      "id": "79bc2e0b-3704-48d3-ac25-8bd33cc8a2f4",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "members",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ Number($('Webhook').item.json.body.member_id) }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4832,
+        864
+      ],
+      "id": "45a1e443-711f-4319-b1c8-506d8355b0d2",
+      "name": "Get a row3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "11b223a0-4de2-4a3f-848f-32e4961d0c7f",
+              "leftValue": "={{ $json.rfid_uid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4336,
+        864
+      ],
+      "id": "30733aea-2036-4f82-bc0c-e05493c8989b",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "11b223a0-4de2-4a3f-848f-32e4961d0c7f",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4624,
+        864
+      ],
+      "id": "f17f2467-6670-4808-b662-a35138e77f0e",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"status\": \"already_registered\",\n  \"message\": \"This member already has an RFID card\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        928
+      ],
+      "id": "b10d3f95-2bad-46a9-84b4-f2f998982426",
+      "name": "Respond to Webhook12"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "members",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ Number($('Webhook').item.json.body.member_id) }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "rfid_uid",
+              "fieldValue": "={{ $('Webhook').item.json.body.rfid_uid }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4288,
+        1392
+      ],
+      "id": "749c0d5a-363e-4975-bb2c-f2b8a47547f7",
+      "name": "Update a row4",
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"status\": \"registered\",\n  \"message\": \"RFID registered successfully\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        1392
+      ],
+      "id": "7682371c-de74-42a6-9e12-0277899a9c39",
+      "name": "Respond to Webhook13"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"status\": \"rfid_already_used\",\n  \"message\": \"This RFID card is already registered\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        1248
+      ],
+      "id": "f42ff33e-00fa-44e8-8fd7-49b4d6dade2c",
+      "name": "Respond to Webhook14"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "11b223a0-4de2-4a3f-848f-32e4961d0c7f",
+              "leftValue": "={{ $json.rfid_uid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4528,
+        1200
+      ],
+      "id": "a281c490-cde2-41af-98c3-208887f93fa8",
+      "name": "If7"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "members",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "rfid_uid",
+              "condition": "eq",
+              "keyValue": "={{ $('Webhook').item.json.body.rfid_uid }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4784,
+        1200
+      ],
+      "id": "699b41e3-34d9-4272-9422-0e8726fe0368",
+      "name": "Get many rows2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "members",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "rfid_uid",
+              "keyValue": "={{ $('Webhook').item.json.body.rfid_uid }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5152,
+        1760
+      ],
+      "id": "92f9260b-8551-4cfe-9714-6a2611e9dcac",
+      "name": "Get a row5",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "11b223a0-4de2-4a3f-848f-32e4961d0c7f",
+              "leftValue": "={{ $json.is_active }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4464,
+        1744
+      ],
+      "id": "bfde340f-9c2c-4cba-a6b4-9cdf9f313ff6",
+      "name": "If8"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"status\": \"active\",\n  \"message\": \"Subscription is active\",\n  \"member_name\": \"{{ $json.name }}\",\n  \"days_remaining\": {{ Math.max(0, Math.ceil((new Date($json.subscription_end).getTime() - Date.now()) / 86400000)) }}\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        1632
+      ],
+      "id": "cc278797-13a4-4c66-aadc-af714b126963",
+      "name": "Respond to Webhook15"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": false,\n  \"status\": \"expired\",\n  \"message\": \"Subscription expired\",\n  \"member_name\": \"{{$json.name}}\",\n  \"days_remaining\": 0\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        1824
+      ],
+      "id": "9c51fd8f-0046-40cc-becb-204a41aaeb0d",
+      "name": "Respond to Webhook16"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "11b223a0-4de2-4a3f-848f-32e4961d0c7f",
+              "leftValue": "={{ $json.rfid_uid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4752,
+        1760
+      ],
+      "id": "641eeabb-33d6-4f54-a72e-8c7a2547e404",
+      "name": "If9"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"status\": \"not_registered\",\n  \"message\": \"RFID not registered\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -4032,
+        1984
+      ],
+      "id": "48f5de4e-2072-42bd-83b9-938df7b957a5",
+      "name": "Respond to Webhook17"
+    },
+    {
+      "parameters": {
+        "content": "# Check Subscriptions",
+        "height": 224,
+        "width": 864,
+        "color": "#A49132"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -6256,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "e95b77a8-f14a-4c72-9566-8326c2a1a18d",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "members",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone",
+              "keyValue": "={{ $('Webhook').item.json.body.phone }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5152,
+        272
+      ],
+      "id": "b189fd54-2cc4-4063-bfa9-908111a160aa",
+      "name": "Get a row",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "members",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone",
+              "keyValue": "={{ $('Webhook').item.json.body.phone }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -5152,
+        -32
+      ],
+      "id": "a244fbb8-b397-4eb2-ad91-d9f1cdd9420b",
+      "name": "Get a row1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "12GqV5Tqvj0lhJpF",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Get a row1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a row5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows": {
+      "main": [
+        [
+          {
+            "node": "Update a row2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook2": {
+      "main": [
+        []
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Get a row3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get many rows2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row3": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook10": {
+      "main": [
+        []
+      ]
+    },
+    "Update a row4": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook14",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update a row4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows2": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row5": {
+      "main": [
+        [
+          {
+            "node": "If9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook15",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If9": {
+      "main": [
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a row1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "49a77ccd-29c7-41f8-bc44-de98500bea8c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4385639dd6bb7d17053a44823160b6d49a09604546452e23f6a6e36d148b6a45"
+  },
+  "nodeGroups": [],
+  "id": "8xlOVHqE8wJCRVRu",
+  "tags": []
+}
